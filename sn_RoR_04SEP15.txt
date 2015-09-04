@@ -1,0 +1,82 @@
+============================================================================================
+RoR Study Notes
+From the Book: Learn Ruby On Rails For Web Development: Learn Rails The Fast and Easy Way
+by John Elder
+Cloud9 IDE: ide.c9.io
+============================================================================================
+rails -v
+ruby -v
+# create new app
+rails new APP_PATH [options]
+rails new pinterested
+# Start rails server (light weight web server called WEBrick vs Apache Nginx
+rails server
+rails s -p $PORT -b $IP
+MVC Architecture - Model, View, Controller
+    model - database
+    view - web pages, how are website looks
+    controller - controls interactions between model and view
+    app directory - has subdir eg model, view, and controllers
+Gemfiles - gems are functions?
+         - rubygems.org - gem repo
+         - Gemfile, is a file within the rails app where you list the gems you are to use
+           - add gem - name of gem plus version number on new line in the Gemfile
+           - bundle install
+bundle install - adds new gems from ./Gemfile
+               - restart server (WEBrick)
+# add a new page called index to the home directory
+rails generate controller home index
+    https://pinterested-rac3rx.c9.io/home/index
+    Home#index
+    Find me in app/views/home/index.html.erb
+    /home/ubuntu/workspace/app/views/home/index.html.erb
+    --snip--
+<h1>Home#index</h1>
+<p>Find me in app/views/home/index.html.erb</p>
+    --snip--
+*.html.erb files are embedded ruby
+
+# chg routing from home/index --> home#index in /config/routes.rb
+--snip--
+Rails.application.routes.draw do
+get 'home/index'
+.
+.
+end
+--snip--
+
+
+--snip--
+Rails.application.routes.draw do
+root 'home#index'   ### <-- / to # to indicate root page
+.
+.
+end
+--snip--
+
+github (public) vs bitbucket (private)
+
+git config --global user.name "rac3rx"
+git config --global user.email chris.hammond.tx@gmail.com
+git config --global push.default matching
+git config --global alias.co checkout
+git init        ### <-- new dir has been generated to handle all of our version control files within our development environment
+                ### <-- Git is now configured for our development environment 
+# Two step process
+git add .                         ### <-- add our project files to our local repo (staging area)
+git commit -am "initial commit    ### <-- (-a grab all staged files; -m message/comment)
+                                  ### <-- comments are important for ver ctrl because it will be shown next to every file that has changed since the last commit; easy on the eyes
+                                  ### <-- eg pretent we added a new file called about.us.html.erb ; we would execute git commit -am "added an about us page"
+#rolling back code - catastrophe
+git checkout -f                   ### <-- last known good commit; unless last good commit has the corruption
+
+Remote git accounts/sites bitbucket|github
+    add bitbucket to development environment 
+cat .ssh/id_rsa.pub
+git remote add origin git@bitbucket.org:<username>/pinterested.git
+git remote add origin git@bitbucket.org:rac3rx/pinterested.git
+git push -u origin --all 
+
+git add .
+git commit -am 'enter your comment'
+git push

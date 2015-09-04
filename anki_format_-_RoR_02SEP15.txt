@@ -1,0 +1,200 @@
+01. Name of the RoR study book?	Learn Ruby On Rails For Web Development: Learn Rails The Fast and Easy Way
+02. Who's the author of "Learn Ruby On Rails For Web Development: Learn Rails The Fast and Easy Way"?	John Elder
+03. Cloud9 SaaS IDE website URL?	ide.c9.io
+04. Verify RoR version via the cli.	rails -v
+05. Verify ruby version via the cli.	ruby -v
+06. Create a new RoR app called pinterested.	rails new APP_PATH [options] rails new pinterested
+07. Start rails server (light weight web server called WEBrick vs Apache Nginx	 rails server rails s -p $PORT -b $IP
+08. What are the MVC Architecture/Framework principle components?	Model (ActiveRecord ): Maintains the relationship between Object and Database and handles validation, association, transactions, and more., View ( ActionView ): A presentation of data in a particular format, & Controller ( ActionController ): The facility within the application that directs traffic, on the one hand querying the models for specific data, and on the other hand organizing that data (searching, sorting, massaging it) into a form that fits the needs of a given view. REF: http://www.codelearn.org/ruby-on-rails-tutorial/mvc-in-rails http://stackoverflow.com/questions/1931335/what-is-mvc-in-ruby-on-rails
+09. What is a model within the MVC framework?	database
+10. What is a view within the MVC framework?	web pages, how are website looks
+11. What is a view within the MVC framework?	controls interactions between model and view
+12. What is the directory structure?	You will find a directory structure as follows:
+
+demo/
+..../app
+......../controller
+......../helpers
+......../models
+......../views
+............../layouts
+..../components
+..../config
+..../db
+..../doc
+..../lib
+..../log
+..../public
+..../script
+..../test
+..../tmp
+..../vendor
+README
+Rakefile
+
+The purpose of each directory
+app ........... : This organizes your application components. It's got subdirectories that hold the view (views and helpers), controller (controllers), and the backend business logic (models).
+app/controllers : The controllers subdirectory is where Rails looks to find controller classes. A controller handles a web request from the user.
+app/helpers ... : The helpers subdirectory holds any helper classes used to assist the model, view, and controller classes. This helps to keep the model, view, and controller code small, focused, and 
+                 uncluttered.
+app/models .... : The models subdirectory holds the classes that model and wrap the data stored in our application's database. In most frameworks, this part of the application can grow pretty messy, tedious, 
+                 verbose, and error-prone. Rails makes it dead simple!
+app/view ...... : The views subdirectory holds the display templates to fill in with data from our application, convert to HTML, and return to the user's browser.
+app/view/layouts: Holds the template files for layouts to be used with views. This models the common header/footer method of wrapping views. In your views, define a layout using the <tt>layout :default</tt> 
+                  and create a file named default.rhtml. Inside default.rhtml, call <% yield %> to render the view using this layout.
+components .... : This directory holds components tiny self-contained applications that bundle model, view, and controller.
+config          : This directory contains the small amount of configuration code that your application will need, including your database configuration (in database.yml), your Rails environment structure 
+                  (environment.rb), and routing of incoming web requests (routes.rb). You can also tailor the behavior of the three Rails environments for test, development, and deployment with files found 
+                  in the environments directory.
+db ............ : Usually, your Rails application will have model objects that access relational database tables. You can manage the relational database with scripts you create and place in this directory.
+doc             : Ruby has a framework, called RubyDoc, that can automatically generate documentation for code you create. You can assist RubyDoc with comments in your code. This directory holds all the
+                  RubyDoc-generated Rails and application documentation.
+lib ........... : You'll put libraries here, unless they explicitly belong elsewhere (such as vendor libraries).
+log             : Error logs go here. Rails creates scripts that help you manage various error logs. You'll find separate logs for the server (server.log) and each Rails environment (development.log, 
+                  test.log, and production.log).
+public ........ : Like the public directory for a web server, this directory has web files that don't change, such a s JavaScript files (public/javascripts), graphics (public/images), stylesheets 
+                  (public/stylesheets), and HTML files (public).
+script          : This directory holds scripts to launch and manage the various tools that you'll use with Rails. For example, there are scripts to generate code (generate) and launch the web server (server).
+test .......... : The tests you write and those Rails creates for you all go here. You'll see a subdirectory for mocks (mocks), unit tests (unit), fixtures (fixtures), and functional tests (functional).
+tmp             : Rails uses this directory to hold temporary files for intermediate processing.
+vendor ........ : Libraries provided by third-party vendors (such as security libraries or database utilities beyond the basic Rails distribution) go here.
+
+Apart from these directories there are two files available in the newly created application directory.
+
+README: This file contains a basic detail about Rail Application and description of the directory structure explained above.
+Rakefile: This file is similar to Unix Makefile which helps with building, packaging and testing the Rails code. This will be used by rake utility supplied along with Ruby installation.
+
+REF: http://www.tutorialspoint.com/ruby-on-rails/rails-directory-structure.htm
+     http://notes.jerzygangi.com/the-ruby-on-rails-folder-structure/
+     https://en.wikibooks.org/wiki/Ruby_on_Rails/Getting_Started/Creating_the_application
+13. Within RoR root directory, what is the app subdirectory?	it has subdir(s) eg models, views, and controllers ie this organizes your application components. It's got subdirectories that hold the view (views and helpers), controller (controllers), and the backend business logic (models).
+14. What is "RoR/rails root"?	It refers to the root directory of the application, not Rails itself. The value will depend somewhat on your system; for example, my Rails root for the first application is /Users/mhartl/rails_projects/first_app.
+15. What are the four most important files?	1. public/index.html is the file that gets rendered when you see the output of the default Rails application in App Output tab. 
+                                                   Other publicly accessible files resides inside public directory. Rails do not process these files & they are accessible as is from the browser.
+                                                2. Gemfile contains the gems (Rails libraries) needed for your Rails application. These gems are fetched & installed by running bundle install command.
+                                                   Note Any inclusion/exclusion of gems in the file would need you to run bundle install again for the changes to take effect.
+                                                3. app/ directory contains all application related files - the models, controllers and views. This is the heart of your application where all the magic 
+                                                   happens. More about it in the subsequent modules.
+                                                4. config/ directory contains files related to the application configuration.
+                                                   NB: Any changes in the configuration file would require you to restart Rails server for the changes to take effect.
+16. 3 important things about Gemfile.	1. A gem is a self-contained module of Ruby code. Somebody else has created it and you use it. It is like a self-contained external library.
+                                        2. When you run bundle install, it goes through the gems listed in Gemfile one by one, fetches them, installs them locally & include them in the app.
+                                        3. Every gem can have an optional version information. For example, gem 'rails', '3.2.6' instructs 'bundle install' command to fetch Rails version 3.2.6
+17. What is the file Gemfile used for within RoR?	A gemfile is a list of all gems that you want to include in the project. It is used with bundler (also a gem) to install, update, remove and otherwise manage your used gems.
+                         The gemfile has another purpose - you can group gems in :development, :test, :assets, :production, etc groups and Rails will know when to include the gems. For example:
+
+                         group :development, :test do
+                             gem "rspec-rails"
+                             gem "factory_girl_rails"
+                             gem "guard-rspec"
+                         end
+
+                         Note that on Rails 4, the assets group has been deprecated
+                         REF: http://stackoverflow.com/questions/14072880/whats-the-use-of-gemfile-in-rails
+18. What is Gemfile.lock?	The Gemfile.lock file is where Bundler records the exact versions that were installed. 
+19. What are gems?	 Self contained methods/functions or more simply apps
+20. What is a popular gem repo?	rubygems.org it's the most popular gem repo, and is often declared as the repo/source within Gemfile
+                                --snip--
+                                source 'https://rubygems.org'
+
+                                gem 'rails', '4.1.0.rc2'
+                                gem 'rack-cache'
+                                gem 'nokogiri', '~> 1.6.1'
+                                --snip--
+                                REF: http://bundler.io/rationale.html
+
+21. How do you install your gems?	bundle install
+                                        bundle install - adds new gems from ./Gemfile
+                                        REF: http://bundler.io/rationale.html
+
+22. When deploying your code to a staging or production server, what command would you run on the remote server? 	$ bundle install --deployment
+                                                                                                                        REF: http://bundler.io/rationale.html
+22. RoR security concerns?	Session fixation and hijacking
+                                Cross-Site Request Forgery
+                                Mass Assignment
+                                SQL Injection
+                                Cross-Site Scripting and HTML Injection
+                                REF: http://codefol.io/posts/Why-Rails-and-not-Sinatra-or-Node-js
+                                     http://guides.rubyonrails.org/security.html
+23. Name three ruby frameworks? Rails (super feature rich, Sinatra (dead simple), and Padrino (fork of Sinatra in the middle)
+24. How and why to restart server (WEBrick)?	It's a web server. You can just close the terminal tab in which you initially started Webrick, then do "rails s" in a new terminal tab. 
+                                                You would restart the server when new configurations are made.  
+
+                                                bin/rails server
+                                                ruby script/server 
+                                                http://localhost:3000
+                                                
+                                                There are several options, including but not limited to:
+                                                -p port: Specify the port to run on
+                                                -b ip: Bind to a specific IP address
+                                                -e name: Use a specific Rails environment (like production)
+                                                -d: Run in daemon mode
+                                                -h: Display a help message with all command-line options
+25. List the most absolutely critical rails command to your everyday usage of Rails. In the order of how much you'll probably use them are:	rails console
+                                                                                                                                                rails server
+                                                                                                                                                rake
+                                                                                                                                                rails generate
+                                                                                                                                                rails dbconsole
+                                                                                                                                                rails new app_name
+
+                                                                                                                                                commands can run with -h or --help 
+                                                                                                                                                REF: http://guides.rubyonrails.org/command_line.html
+26. How to install rails if you don't have it installed?	You can install the rails gem by typing gem install rails, if you don't have it already.
+27. add a new page called index to the home directory.	 rails generate controller home index
+                                                         https://pinterested-rac3rx.c9.io/home/index
+                                                         Home#index
+                                                         Find me in app/views/home/index.html.erb
+                                                         /home/ubuntu/workspace/app/views/home/index.html.erb
+                                                         --snip--
+                                                         <h1>Home#index</h1>
+                                                         <p>Find me in app/views/home/index.html.erb</p>
+                                                         x--snip--
+28. What are *.html.erb files?	*.html.erb files are embedded ruby
+29. chg routing from home/index --> home#index in /config/routes.rb	vim .../app/views/home/index.html.erb
+                                                                        --snip--
+                                                                        Rails.application.routes.draw do
+                                                                        get 'home/index'
+                                                                        .
+                                                                        .
+                                                                        end
+                                                                        --snip--
+
+                                                                        --snip--
+                                                                        Rails.application.routes.draw do
+                                                                        root 'home#index'   ### <-- / to # to indicate root page
+                                                                        .
+                                                                        .
+                                                                        end
+                                                                        --snip--
+30. What's the difference between github and bitbucket?	github (public) vs bitbucket (private)
+31. What are the five steps in git to setup a development environment?	1st Step: git config --global user.name "rac3rx"
+                                                                        2nd Step: git config --global user.email chris.hammond.tx@gmail.com
+                                                                        3rd Step: git config --global push.default matching
+                                                                        4th Step: git config --global alias.co checkout
+                                                                        5th Step: git init   <-- new dir has been generated to handle all of our version control files within our development environment
+                                                                                             <-- Git is now configured for our development environment 
+32. What is the two step process to stage and commit are dev env?	git add .                          <-- add our project files to our local repo (staging area)
+                                                                        git commit -am "initial commit     <-- (-a grab all staged files; -m message/comment)
+                                                                                                           <-- comments are important for ver ctrl because it will be shown next to every file that has 
+                                                                                                               changed since the last commit; easy on the eyes
+                                                                                                           <-- eg pretent we added a new file called about.us.html.erb ; 
+                                                                                                               we would execute git commit -am "added an about us page"
+33. rolling back code from catastrophe?	git checkout -f    <-- last known good commit; unless last good commit has the corruption
+
+34. add bitbucket to development environment.	 cat .ssh/id_rsa.pub
+                                                 git remote add origin git@bitbucket.org:<username>/pinterested.git
+                                                 git remote add origin git@bitbucket.org:rac3rx/pinterested.git
+                                                 git push -u origin --all 
+                                                 git add .
+                                                 git commit -am 'enter your comment'
+                                                 git push
+35. What is the alternative to Webrick?	Mongrel
+36. To start a single mongrel instance?	On all platforms: mongrel_rails start
+                                        
+                                        Should be executed in the root directory of the Rails app you wish to run on Mongrel. 
+                                        There are numerous options you can specify, including:
+
+                                        -p port: run on a specific port
+                                        -e environment: execute with a specific Rails environment, like production
+                                        -d: run in daemon mode
+                                        REF: https://en.wikibooks.org/wiki/Ruby_on_Rails/Getting_Started/Running_the_Server
