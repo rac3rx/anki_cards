@@ -1,0 +1,253 @@
+1. iBus (Intelligent Input Bus) is an input method (IM) framework for multilingual input in Unix-like operating-systems.  What three commands can you use to install it?	su -c 'yum groupinstall <language>-support' ibus-setup ibus-daemon --xim
+2. What are locales? A Locale is a set of information that most programs use for determining country and language specific settings.  What are some of the associated systemd commands used to setup locales?	localectl list-locales | grep ^ja localectl set-locale LANG=ja_JP.utf8 localectl list-x11-keymap-layouts localectl set-x11-keymap it localectl | grep "X11 Layout"
+3. What are the commands used for, setting keyboard layout?	localectl status localectl list-keymaps localectl set-keymap --no-convert keymap man 1 localectl
+4. How do you make a persistent configuration, setting the keyboard layout?	 # man 5 vconsole.conf, /etc/vconsole.conf KEYMAP=cz-qwertz
+5. How do you make temporary configuration, when setting keyboard layout?	# loadkeys keymap loadkeys es # setxkbmap -layout es
+6. What are some environment variables within the ~/.bashrc set the language used on text login to match gnome desktop environment?	<--snip--> i=$(grep 'Language=' /var/lib/AccountService/users/${USER} \ | sed 's/Language=//') if [ "$i" != "" ]; then export LANG=$i fi <--snip--/> <--snip--> # Setting the user locale in ~/.bashrc # source ~/.bashrc # ctl+alt+backspace # verify setting via cli: $locale export LANG="de_DE.UTF-8" export LC_COLLATE="C" <--snip--/>
+6a. How do you set UTF8 for english so it is persistent with all the apps?	export LANG=en_US.utf-8
+7. What file do you use for the keyboard layout for the X server?	 /etc/X11/xorg.conf # XkbOptions allows toggle between keyboard layouts; pressing Alt-Shift. Toggles Scroll Lock light on/off, grp_led:scroll option; handy visual indicator of which keyboard layout used: <--snip--> Section "InputClass" Identifier "keyboard-all" Driver "evdev" Option "XkbLayout"    "us,ru" Option "XkbOptions"   "grp:alt_shift_toggle,grp_led:scroll" MatchIsKeyboard "on" EndSection <--snip--/> 
+8. Localization - gnome cli - language settings	# gnome-control-center region
+9. global lang variables	LANG=fr_FR.utf8 date setlocale en_US.utf-8 
+10. How do you check via the CLI what the current value of $LANG is?	# locale
+11. What is the alternate GUI method of changing LANG input?	Super+Space or Windows+Space
+12. What the language input config files?	# ~/.i18n cat /etc/sysconfig/i18n
+13. What are the dead keys?	apostrophe & shift+tilde
+14. What file and/or command(s) are used to setup the timezone/localization?	/etc/timezone # timedatectl list-timezones # timedatectl set-timezone Europe/Brussels
+15. Setup the Hardware Clock / UTC (or GMT, Greenwich Mean Time) Use UTC clock.	/etc/conf.d/hwclock clock="UTC"
+16. How do you setup fonts & systemd?	(/etc/vconsole.conf) # /usr/lib/systemd/system/systemd-vconsole-setup.service <--snip--> After=sysinit.target Before=shutdown.target <--snip--/>
+17. Where are the system wide fonts located?	/usr/share/fonts
+18. What are the three commands that are associated with  gtk2fontsel and basic CLI tools like fc-query from fontconfig?	fc-cache && mkfontscale && mkfontdir showconsolefont setfont lat2-16 fc-list :lang=ar | cut -d: -f1 fc-match monospace
+19. Little trivia here's a nice font.	Ice Cream Sandwich's Roboto font
+20. How do you adjusting typematic delay and rate?	# kbdrate -d 200 -r 30
+21. How do you perform a hardware analysis via the CLI?	# dmidecode -q
+22. How do you obtain hard drive characteristics via the CLI eg information & timing?	# hdparm -i /dev/sda hdparm -tT /dev/sda
+23. Get CPU information.	# cat /proc/cpuinfo 
+24. Get kernel information.	# uname -r # cat /proc/version
+25. Get interrupts	# cat /proc/interrupts
+26. Get memory information	# cat /proc/meminfo
+27. Get swap information	# cat /proc/swaps
+28. Get interface information	# cat /proc/net/dev
+29. Get mount information	# cat /proc/mounts
+30. Get arch info.	# arch # uname -m
+31. Display calendar via CLI. 	# cal 2014
+32. The date command format.	# date 041217002007.00    #MonthDayHoursMinutesYear.Seconds
+33. The date command in future eg plus 10 days into the future.	# date -d "+10 days"
+34. The date command in future eg plus 10 days into the future.	# date -d "10 days ago"
+34a. Using the date command; how would you predict 30 days into the future?	$ date -d "30 days" +"%Y-%m-%d"
+34b. Add the user someuser to expire 30 days from now; using date with command substitution.	$ useradd -e `date -d "30 days" +"%Y-%m-%d"` someuser
+34c. Modify the user someuser to expire 30 days from now; using date with command substitution.	 change $ chage -E `date -d "30 days" +"%Y-%m-%d"` someuser
+34d. https://tournasdimitrios1.wordpress.com/2010/12/04/managing-users-and-groups-on-linux-creating-deleting/    Set the date or number of days since January 1, 1970 on which the user’s account will no longer be accessible. The date may also be expressed in the format YYYY-MM-DD (or the format more commonly used in your area).	chage -E username
+34e. Lock a user’s account within ten minutes with the at command.	$ echo usermod --lock someuser | at now + 10 minutes
+34f. What command to lock and disable user account.	usermod -L -e 1 {user} or usermod -L -e 1970-01-01 {user} and/or passwd -l
+34g. The -L option lock user's password by putting a ___ in from of the the encrypted password.	!
+34h. What two files show failed password for a lock account?	 /var/log/secure or /var/log/auth.log file
+34i. Use what command to see current status of the user account?	# chage -l raj
+34j. lock a user’s account after thirty days with cron.	???
+35. Can a user still ssh into an account using public key encryption; after using the lock vs expire options?	not if you use this command chage -E 0 {username}
+35a. List USB devices.	# lsusb -tv
+35b. List USB devices.	# lspci -tv
+36. find command	# find /etc -type f -exec fgrep de_DE.UTF-8 {} \; -ls
+36a. find all the files on the system with the uid 541 and remove them	# find / -type f -uid 541 -print -exec rm {} \;
+36b. find all the files on the system with gid with 20 and change them to 1000.	find / -gid 51 ! -type l -exec chgrp -h 1000 {} \;
+36c. It was observed that the setuid, setgid and sticky bits are not retained after chown and chgrp commands are run. It is now up to you to track down the special files and reset these bits.  Use the find command to achieve this.	find / \( \( -perm -4000 -o -perm -2000 -o -perm -1000 \) -a \( -group  -o -user  \) \) -printf "\n%p|%m\n" -ls 2> /dev/null
+36d. change a user’s UID.	usermod -u <NEWUID> <LOGIN>
+36e. change a user’s GID.	groupmod -g <NEWGID> <GROUP>
+36f. find all files on system for user and change them to new UID.	find / -user <OLDUID> -exec chown -h <NEWUID> {} \;
+36g. find all files on system for user’s group and change them to new GID.	find / -group <OLDGID> -exec chgrp -h <NEWGID> {} \; usermod -g <NEWGID> <LOGIN>
+37. What yum command command searches for which packages provide the requested dependency of file. This also takes wildcards for files?	# yum provides/whatprovides \*/setlocale
+38. How would you use yum whatprovides to install ifconfig?	# yum whatprovides ifconfig
+39. How do you append a new directory bin to a user's home directory $PATH?	# PATH=$PATH:$HOME/bin
+40. List all env variables.	 env
+41. aliases; write the ll, rm, & cp alias.	# alias ll='ls -l --color=auto' alias rm='rm -i' alias cp='cp -i' 
+42. How do you over-ride the rm alias when you want to avoid interactiveness eg numerous y/n prompts?	# rm -f
+43. IP Forwarding: How do you setup via cli?	# echo "1" > /proc/sys/ipv4/ip_forward
+44. Does IP Forwarding allow VMs to communicate to outside networks?	# Yes
+45. What trusted interface must be setup on the firewall, so VMs can utilize IP Forwarding?	virtual network adapter
+46. Type "ls tmp tmp1" sans quotes and redirect stdout to a file named ls.txt and stderr to /dev/null;tmp1 is missing	$ ls tmp tmp1 > ls.txt 2> /dev/null
+47. This time type "ls tmp tmp1" sans quotes and redirect stdout and stderr to a file named ls.txt.	ls > ls.txt 2>&1
+48. Set enforcing mode within selinux.	 setenforce 1
+49. List and identify selinux file(s), process(es), user(s) and group IDs.	 # ls -Z # ps -Z # id -Z
+50. SELinux, restore default file contexts.	 semanage fcontext -a -t type file-name|¿dir_spec(/.*)?¿
+51. What app do you need for semanage?	policycoreutils-python
+52. SELinux, Restore default file contexts.	restorecon -R -F -v full_path_to_file_or_dir
+53. What app do you need for restorecon?	policycoreutils
+54. SELinux, for services and their associated files, what do you run?	apropos _selinux | grep ftpd or grep ftpd /etc/selinux/targeted/context/files/file_contexts
+55. If apropros _selinux doesn't work, what must you install and what are the steps?	# yum -y install selinux-policy-devel, # sepolicy manpage -a -p /usr/share/man/man8, # mandb, # apropos _selinux
+56. How do you use boolean settings to modify system SELinux settings?	semanage boolean -l or getsebool -a : show list of all booleans
+57. How do you persistently set a selinux boolean value?	 setsebool -P boolean_name on|off, system-config-selinux
+58. If file context is correct but you still have SELinux access violations what do you check?	 /var/log/audit/audit.log or run sealert -b), check the booleans to see if the service is allowed /selinux/booleans/, service-name_selinux man page for booleans and explanations
+59. How do you diagnose and address routine SELinux policy violations?	 Check DAC permissions, ACL, and then SELinux errors use the restore default file context's ability to solve the problem, ausearch -m avc -c command_name, sealert -a /var/log/audit.log (needs auditd), audit2why < /var/log/audit/audit.log, system-config-selinux, seaudit, semanage user -l, semanage login -a -s staff_u user_name, semanage login -a -S targeted -s xguest_u -r s0 __default__
+60. CH. 3. Users and Groups: Add user John Doe with full name and specify home dir.	useradd -c "John Doe" -d /home/jdoe jdoe
+61. Delete user jdoe and home directory.	userdel -r jdoe
+61a. Move or create the user’s new login directory.	usermod -d /usagers/marco -m marco
+61b. The name of the user will be changed from LOGIN to NEW_LOGIN.	usermod -l hakimb
+61c. The new numerical value of the user's ID	usermod -u hakimb
+62d. Change the user’s shell to false.	usermod -s /bin/false usager1
+62e. Change the user’s shell to nologin.	usermod -s /bin/nologin usager1
+62. Create primary group hades and add jdoe to it.	groupadd hades; usermod -g hades jdoe
+63. Create user John Doe jdoe and add him to the group hades and purgatory with /home/jdoe as home dir.	useradd -G hades,purgatory -c "John Doe" -d /home/jdoe
+64. Change jdoe's primary group to purgatory.	usermod -g purgatory jdoe
+65. What's the format for /etc/group?	groupName:password:groupID:user1,user2
+66. What's the format for /etc/passwd?	user:password:UID:GID:fullName:homeDir:shellLogin
+67. What's the format for /etc/shadow?	user:password
+68. What command do you use to verify user's information eg UID, GID, and groups?	id username
+69. The commands\usermod and useradd have two switches/options "-g/-G" for primary (primary login group) and supplemental groups; which one is which?	-g primary group and -G supplemental groups
+70. Add jdoe to supplemental group olympus.	usermod -G olympus jdoe
+71. What is the GUI for managing users?	system-config-users
+72. What switch do you use for useradd when setting up an automatic home directory?	useradd -m
+73. What switch do you use for useradd when setting up the shell?	useradd -s
+74. What switch do you use for useradd when setting up the expiration?	useradd -e
+75. What switch do you use for useradd when setting up the number of days before expiration?	useradd -f
+76. What command do you use to change groups as a user?	newgrp/chgrp
+77. How can you create bulk users with the newusers command?	# newusers FILENAME
+77a. the newusers source file format is same as the password file, what is it?	loginname:password:uid:gid:comment:home_dir:shell
+77b. add a new openssl password to a new user.	openssl passwd -crypt; useradd -p 
+77c. Add a new user, group wheel, and password using useradd.	useradd -G wheel -p \$1\$<string1>\$<string2>
+77d. Add a new user, group, and password certificate. User can’t login interactively but can login via ssh key. Additionally assign a ssh key.	sudo useradd -p "*" -U -m user1 -G sudo && update-ssh-keys -u user1 user1.pem
+77e. /etc/shadow is a hash generated from the password, the password hash today comes in three parts, separated by dollar signs ($).  What are the three parts?	ID, salt, and hash
+77f. /etc/shadow password hash today comes in three parts, so what is the first part?	ID, identifies the encryption hash method used. A value of 1 denotes MD5; 2 or 2a is Blowfish; 3 is NT Hash; 5 is SHA-256; and 6 is SHA-512
+77g. /etc/shadow password hash today comes in three parts, so what is the second part?	Salt, this is used by the encryption algorithms, and could be up to 16 characters.
+77h. /etc/shadow password hash today comes in three parts, so what is the third part?	Hash, the actual “password” (or hash) is last. MD5 uses 22 characters, SHA-256 uses 43, and SHA-512 uses 86.
+78. add a new group	groupadd management
+79. Create a new user with groupid 540 for the user "usager2"	useradd -u 540 usager2
+80. Add a new user usager4 to dev as primary group and alternate groups test and prod	# /usr/sbin/useradd –g dev –G test,prod usager4
+81. add a new user usager6, but expiring on 30OCT2004.	# useradd -e 2004-10-30 usager6
+82. List default useradd settings.	# useradd -D 
+82a. set a account password expiry date i.e. 45 days on a user ‘abc6’	# useradd -f 45 abc6
+82b. To change the default home directory location for all new users?	# useradd -D -b /opt/users
+82c. the two files which contain the default values to be assigned to a user when created using useradd?	/etc/default/useradd and  /etc/login.defs
+82d. Which of the two files which contain the default values to be assigned to a user when created using useradd contains UID, GID, password encryption method and expiry related information?	/etc/login.defs
+83. Set a user's primary group to dev.	# useradd -D -g /dev
+83a. Change a user’s primary gid.	groupmod -g <NEW_GID> <groupname> or /etc/group
+83b. Update their files.	
+84c. Make the user mavin acount never expire.	useradd -f -1 marvin
+84. If the changed group is the main group of a user, /etc/passwd need to be adapted, too.	usermod -g  <NEW_GID> <username>
+84a. Create user bob's home directory.	useradd -m bob
+84b. Modify the default useradd option for expirary date of 17JAN2038 with 365 days.	useradd -D -e 1/17/2038 -f 365 
+84c. Create user skolmes with uid 1101 and gid 1300	useradd -u 1101 -g 1300 skolmes 
+84d. Create user jones with a home directory jj.	useradd -m -d /home/jj jones
+84e. Create user timd with the folowing supplemental groups.	useradd -G support,sales timd
+84f. Make the user mavin inactive.	useradd -f 0 marvin
+84g. useradd -s /sbin/nologin	marvin
+84h. List the goups for user1.	groups user1
+84i. The default values you get when you create a new user account with useradd (default shell, GID, expire dates, and so on) are set by values in what files?	the /etc/login.defs and /etc/default/useradd
+84j. Besides editing the /etc/login.defs and /etc/default/useradd; what command and option must be used to list or selectively change the user default user account settings when creating new users?	useradd -D [-subOption]
+84k. Set all new users to expire in 2009.	$ sudo useradd -D -e 2009-04-07
+84l. Set default base dir and shell when adding a new user account.	$ sudo useradd -D -b /home2 -s /bin/csh
+84m. Set the initial default path prefix for a new user’s home directory.	useradd -D -b /tmp
+84n. Display the default values that are defined in /etc/default/useradd file.	useradd   -D
+84o. Set the default date on which the user’s account is disabled (value in days)	useradd -D -e
+84p. Set the name of the new user’s login shell.	useradd -D -s
+84q. Set the number of days to 5 after a password has expired before the account will be disabled	useradd -x 5 someUser or chage -M 5
+84r. How many ways can you check password or expirary user account information?	passwd -S, chage -l, and getent passwd someUser
+85. Set a user's default shell to CSH.	# useradd -D -s /bin/csh
+86. Set a user's login expiration to 31DEC2004.	# useradd -D -e 2004-12-31
+87. List a user's primary/effective group.	# id -g
+88. List a user's supplemental GIDs.	# id -G
+89. List a user's supplemental group names.	# id -Gn
+90. List a user's primary/effective group name.	# id -gn
+91. Create a directory and set the mode at the same time.	mkdir -m a=rwx
+92. Set sticky bit in symbolic notation on file sticky.txt	chmod +t sticky.txt
+93. Remove sticky bit in symbolic notation on file sticky.txt	chmod -t sticky.txt
+94. Attaching a system to centralized LDAP and Kerberos servers  pg 67	/etc/ldap.conf /etc/krb5.conf /etc/sssd/sssd.conf /etc/nsswitch.conf /etc/pam.d/* /etc/openldap/cacerts authconfig authconfig-tui authconfig-gtk system-config-authentication
+95. What LDAP parameters would a client need? 	DN Distinguished Name (dc=example, dc=com) (ou=People, o=People, o=PonyCorp
+96. Encrypt foo.txt	gpg --encrypt Recipient [Data]
+97. decrypt	gpg [--decrypt] [Data]
+98. Before you can encrypt or sign files with GPG you must have a key.	$ gpg --gen-key
+99. Post the public, ascii side of your key to the web.	$ gpg --armor --output pubkey.txt --export 'Your Name’; gpg --send-keys 'Your Name' --keyserver hkp://subkeys.pgp.net
+99a. Here we encrypt/decrypt a file that is just for our own use.	$ gpg --encrypt --recipient 'Your Name' foo.txt; gpg --output foo.txt --decrypt foo.txt.gpg
+99b. Encrypting for Recipient	gpg --search-keys 'myfriend@his.isp.com' --keyserver hkp://subkeys.pgp.net; gpg --import key.asc; gpg --list-keys; gpg --encrypt --recipient 'myfriend@his.isp.net' foo.txt
+99c. Decrypting gpg.	gpg --output foo.txt --decrypt foo.txt.gpg
+99d. Sitnagures gpg.	gpg --verify crucial.tar.gz.asc crucial.tar.gz; gpg --armor --detach-sign your-file.zip
+100. Access a shell prompt and issue commands with correct syntax.  How do you access a shell prompt from a GUI interface?	CTRL+ALT+F2 (F2-F5)
+101. Access a shell prompt and issue commands with correct syntax.  How do you access a shell prompt from a non-GUI CLI interface?	ALT+F1
+102. Access a shell prompt and issue commands with correct syntax.  How do you access a shell prompt from a anaconda GUI interface?	CTRL+ALT+F2
+103. Use find and grep to locate and list the filenames with the following filter _selinux within /etc/ directory.	find /etc -exec grep -l "`" {} \;
+104. What command is used to generate selinux man pages and/or policies?	sepolicy
+105. How do you install selinux man pages?	# yum whatprovides sepolicy  # yum -y install policycoreutils-devel    # sepolicy manpage -a -p /usr/share/man/man8    ## -a --all -p --path
+106. SELinux has three basic modes of operation, what are they?	enforcing, permissive, and disabled
+107. however, an additional qualifier of targeted or mls which control how pervasive SELinux rules are applied, with which one being the less stringent level?	targeted
+108. The SELinux mode can be viewed and changed by using which GUI tool?	the SELinux Management GUI tool
+108a. To check what SELinux packages are installed on your CentOS 7 system, you can run what command?	rpm -qa | grep selinux
+109. How do you access the SELinux Management GUI tool?	which is available on the Administration menu or from the command line by running 'system-config-selinux'
+109a. What package provides the the SELinux Management GUI tool?	it is part of the policycoreutils-gui package and is not installed by default.
+109b. The 'setenforce' command may be used to switch between Enforcing and Permissive modes on the fly but note that these changes do not persist through a system reboot. True or False?	True
+109c. To make changes persistent through a system reboot, edit the 'SELINUX=' line in which file?	/etc/selinux/config  for either 'enforcing', 'permissive', or 'disabled'. For example: 'SELINUX=permissive'
+109d. SELinux follows the model of least-privilege; by default everything is denied and then a policy is written that gives each element of the system only the access required to function. True or False	True
+109e. SELinux model of least-privilege is a description that best describes the strict policy. True of False?	True
+109f. By design, SELinux allows different policies to be written that are interchangeable. The default policy in CentOS is the targeted policy which "targets" and confines selected system processes. True or False	True
+109g. SELinux has 3 forms of access control, what are they?	Type Enforcement (TE), Role-Based Access Control (RBAC), and Multi-Level Security (MLS)
+109h. Type Enforcement is the primary mechanism of access control used in the targeted policy, true or false?	True
+109i. Role-Based Access Control (RBAC): Based around SELinux users (not necessarily the same as the Linux user), but not used in the default targeted policy, true or false?	True
+109j. Multi-Level Security (MLS): Most commonly used and often hidden in the default targeted policy, true or false?	false conversely not commonly used.
+109k. The SELinux Troubleshooting tool is provided by the setroubleshoot package. The tool may be launched from the X Window GUI manager System menu or from the CLI how?	sealert -b 
+109l. How do those not running an X server generate human-readable reports from the command line?	sealert -a /var/log/audit/audit.log > /path/to/mylogfile.txt 
+109m. # ls -Z /html/index.html  -rw-r--r--  root root user_u:object_r:default_t    /html/index.html; put the correct selinux context.	# chcon -Rv --type=httpd_sys_content_t /html 
+109n. To make the security context changes permanent, even through a complete filesystem relabel, we can use the SELinux Management Tool or the 'semanage' command from the command line:	semanage fcontext -a -t httpd_sys_content_t "/html(/.*)?"
+109o. Suppose a user edits a copy of index.html in his/her home directory and moves (mv) the file to the DocumentRoot /var/www/html. How would the user recursively restore the default security contexts for the whole directory /var/www/html?	# restorecon -Rv /var/www/html
+109p. Sometimes it is necessary to relabel the complete filesystem although this should only be necessary when enabling SELinux after it has been disabled or when changing the SELinux policy from the default targeted policy to strict. To automatically relabel the complete filesystem upon reboot, do?	# touch /.autorelabel; reboot
+109q. We may want a service such as Apache to be allowed to bind and listen for incoming connections on a non-standard port. By default, the SELinux policy will only allow services access to recognized ports associated with those services. If we wanted to allow Apache to listen on tcp port 81, we can add a rule to allow that using the 'semanage' command?	# semanage port -a -t http_port_t -p tcp 81
+109r. A full list of ports that services are permitted access by SELinux can be obtained with?	# semanage port -l
+109s. semanage is found in what package?	policycoreutils-python which is not installed by default and note there is a separate policycoreutils package
+109t. Finding the right context to use as you manage a system is difficult. Name two places to start are?	ls -Z, look at the directories and data pre-installed by a package and copy the contexts already used.  The alternate tool is seinfo -t which lists all contexts currently in use on your system. grep for the name of your application
+109u. What log contains SELinux errors/conflicts	audit.log
+109v. audit2allow is actually easier to use than presented here. When you have a conflict between two contexts, find the error messages in audit.log and extract them to a separate text file. Feed the errors back to audit2allow, a useful example would be?	audit2allow -M mynewpolicyname <errors.txt
+109w. What will be generated is mynewpolicyname.te and mynewpolicyname.pp along with helpful instructions on how to import the new policy. This new policy will enable whatever was previously conflicting, true or false?	True
+109x. to list all SELinux booleans?	getsebool -a
+109y. To view the contents of a package, use the following command?	rpm -ql <package-name>
+109z. Checks or corrects the security context database on the file system.	/sbin/fixfile
+110. Run ps to display pid, user, args, and cpu, where the output is sorted by cpu column?	# ps -eo pid,user,args,%cpu --sort %cpu
+111. What command do you use to change your login shell?	chsh -l
+112. What command do you use to change your password?	chpasswd
+113. What passwd option enables an administrator to lock an account.	# passwd -l username
+113a. What passwd option, unlocks a previously locked account.	passwd -u username
+114. What passwd option, forces the user to change his or her password upon next login?	passwd -e username
+114a. What passwd option, reports the status of the password for a given account:	passwd -S username
+114b. Use this option to make an account expire automatically if it hasn’t been used for a given period .The argument of this option specifies the exact duration in days of this period.	password -i xx username
+115. How do you create a bulk of users?	newusers `cat > list.users << EOF user1:secret11 user2:secret22 user3:secret33 EOF
+116. How do you change a bulk of user passwords?	cat list.users | chpasswd
+117. http://www.suse.url.tw/test/test3.htm    On a default Linux system, what file system type does the dump command act upon?	EXT2
+118. Your machine has two working NIC's with proper addresses. You want to split your network intotwo new subnets. What single command will accomplish this?	ifconfig & ip
+119. Which file system should never be backed up, and therefore never have to be restored?	swap
+120. Which directory tree are you the least likely to backup or restore?	proc
+121. What command will verify the syntax of a hosts.allow and hosts.deny file combination?	tcpdchk
+122. How can you enable onscreen (non-printing) numbers in a vi session?	:set nu
+128a. There are many color schemes which are usually distributed together with vim. You can select them with what command?	:color desert
+122b. Where are vim's available color schemes located?	$ ls /usr/share/vim/vimNN/colors/ # where vimNN is vim version, e.g. vim74
+122c. How do you set syntax on?	:syntax on
+122d.  Find each occurrence of 'foo' (in all lines), and replace it with 'bar'.	:%s/foo/bar/g
+122e. Find each occurrence of 'foo' (in the current line only), and replace it with 'bar'.	:s/foo/bar/g
+122f. Change each 'foo' to 'bar', but ask for confirmation first.	:%s/foo/bar/gc
+123. When starting vi with the file nohup.out, which of the following will enable onscreen numbers?	vi +"set nu" nohup.out
+124. What command will set a regular users password to force changing it every 60 days? Choose all that apply.	passwd -x 60 user1 and chage -M 60 user1
+125. Which of the following commands will flush all print jobs on all configured queues of the system?	lprm -a all
+126. Your /etc/passwd file appears to have approximately 1/2 shadow passwords and 1/2 standard unix encrypted passwords. What utility would you most likely run again to fix this?	pwconv
+127. sort top 6 processes.	watch "ps aux | sort -rk 3,3 | head -n 6"
+127a. sort top 6 processes, customizing output with cpu, id, user, args. 	ps -eo pcpu,pid,user,args | sort -k 1 -r | head -6
+129. sort cpu processes with top.	o mem, o cpu, o pid
+130. copy public key to guest system.	???
+131. tar copy some files from src to target.	tar cf - ~/.cache | ssh admin@nas_box "(cd /destination ; tar xf -)"
+132. How do you do ssh login without password?	cat .ssh/id_rsa.pub | ssh b@B 'cat >> .ssh/authorized_keys
+133. What is vagrant?	Vagrant is computer software for creating and configuring virtual development environments.
+134. What is docker?	Docker is an open-source program that enables a Linux application and its dependencies to be packaged as a container.
+135. This command is used to create and configure your guest environment/machines based on your Vagrantfile?	vagrant up
+136. SSH into you vagrant running machines.	vagrant ssh
+137. Initialize Vagrant with a Vagrantfile and ./.vagrant directory, using no specified base image. Before you can do vagrant up, you'll need to specify a base image in the Vagrantfile. I rarely initialize Vagrant this way.	vagrant init
+138. get vagrant status	vagrant status
+139. How do you install docker on osx?	boot2docker eg mkdir ~/boot2docker; cd ~/boot2docker; vagrant init yungsang/boot2docker; vagrant up; export DOCKER_HOST=tcp://localhost:2375; docker versiondocker
+139a. docker, startup a container.	docker run -i -t ubuntu /bin/bash
+139b. Install an image	docker pull ${IMAGE}
+139c. List of installed images	docker images
+139d. List containers	docker ps
+140. Your server has two fully functional NIC's with correct IP configuration. The server is not forwarding traffic between the NIC's. Which command string will set the cards to forward properly?	echo 1 > /proc/sys/net/ipv4/ip_forward
+141. Which of the following are valid commands to affect your system's printing?	lpq, lprm, lpr
+142. What configuration file is used for settings and conversion parameters for the ftp daemon?	ftpconversions
+143. Which two commands share the same database for retrieving information?	whatis and apropos
+144. What command will show only complete word matches for a search term?	whatis
+145. What command will show partial word matches for a search term?	apropos
+146. What command is the functional equivalent of the command "man -k searchterm"?	apropos searchterm
+147. What command is the functional equivalent of the command "man -f searchterm"?	whatis searchterm
+148. Where can you specify options that affect the booting of the system?	/etc/lilo.conf and boot= prompt
+149. Which commands will print two copies of the file to the default printer?	$ cat hosts | lpr -#2 and $ lpr -K2 hosts
+150. On a default install of a Linux server, regardless of the distribution version, what are the easiest methods to disable telnet, but not uninstall or remove the service, provide two answers.	Comment telnet out of the /etc/inetd.conf file and Nothing, it's not enabled by default
+151. Which daemon or service can be configured as a non-root user?	cron

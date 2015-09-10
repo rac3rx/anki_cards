@@ -1,0 +1,138 @@
+1. iBus (Intelligent Input Bus) is an input method (IM) framework for multilingual input in Unix-like operating-systems.  What three commands can you use to install it?	su -c 'yum groupinstall <language>-support' ibus-setup ibus-daemon --xim
+2. What are locales? A Locale is a set of information that most programs use for determining country and language specific settings.  What are some of the associated systemd commands used to setup locales?	localectl list-locales | grep ^ja localectl set-locale LANG=ja_JP.utf8 localectl list-x11-keymap-layouts localectl set-x11-keymap it localectl | grep "X11 Layout"
+3. What are the commands used for, setting keyboard layout?	localectl status localectl list-keymaps localectl set-keymap --no-convert keymap man 1 localectl
+4. How do you make a persistent configuration, setting the keyboard layout?	 # man 5 vconsole.conf, /etc/vconsole.conf KEYMAP=cz-qwertz
+5. How do you make temporary configuration, when setting keyboard layout?	# loadkeys keymap loadkeys es # setxkbmap -layout es
+6. What are some environment variables within the ~/.bashrc set the language used on text login to match gnome desktop environment?	<--snip--> i=$(grep 'Language=' /var/lib/AccountService/users/${USER} \ | sed 's/Language=//') if [ "$i" != "" ]; then export LANG=$i fi <--snip--/> <--snip--> # Setting the user locale in ~/.bashrc # source ~/.bashrc # ctl+alt+backspace # verify setting via cli: $locale export LANG="de_DE.UTF-8" export LC_COLLATE="C" <--snip--/>
+7. What file do you use for the keyboard layout for the X server?	 /etc/X11/xorg.conf # XkbOptions allows toggle between keyboard layouts; pressing Alt-Shift. Toggles Scroll Lock light on/off, grp_led:scroll option; handy visual indicator of which keyboard layout used: <--snip--> Section "InputClass" Identifier "keyboard-all" Driver "evdev" Option "XkbLayout"    "us,ru" Option "XkbOptions"   "grp:alt_shift_toggle,grp_led:scroll" MatchIsKeyboard "on" EndSection <--snip--/> 
+8. Localization - gnome cli - language settings	# gnome-control-center region
+9. global lang variables	LANG=fr_FR.utf8 date setlocale en_US.utf-8 
+10. How do you check via the CLI what the current value of $LANG is?	# locale
+11. What is the alternate GUI method of changing LANG input?	Super+Space or Windows+Space
+12. What the language input config files?	# ~/.i18n cat /etc/sysconfig/i18n
+13. What are the dead keys?	apostrophe & shift+tilde
+14. What file and/or command(s) are used to setup the timezone/localization?	/etc/timezone # timedatectl list-timezones # timedatectl set-timezone Europe/Brussels
+15. Setup the Hardware Clock / UTC (or GMT, Greenwich Mean Time) Use UTC clock.	/etc/conf.d/hwclock clock="UTC"
+16. How do you setup fonts & systemd?  (/etc/vconsole.conf) # /usr/lib/systemd/system/systemd-vconsole-setup.service <--snip--> After=sysinit.target Before=shutdown.target <--snip--/>
+17. Where are the system wide fonts located?	/usr/share/fonts
+18. What are the three commands that are associated with  gtk2fontsel and basic CLI tools like fc-query from fontconfig?	fc-cache && mkfontscale && mkfontdir showconsolefont setfont lat2-16 fc-list :lang=ar | cut -d: -f1 fc-match monospace
+19. Little trivia here's a nice font.	Ice Cream Sandwich's Roboto font
+20. How do you adjusting typematic delay and rate?	# kbdrate -d 200 -r 30
+21. How do you perform a hardware analysis via the CLI?	# dmidecode -q
+22. How do you obtain hard drive characteristics via the CLI eg information & timing?	# hdparm -i /dev/sda hdparm -tT /dev/sda
+23. Get CPU information.	# cat /proc/cpuinfo 
+24. Get kernel information.	# uname -r # cat /proc/version
+25. Get interrupts	# cat /proc/interrupts
+26. Get memory information	# cat /proc/meminfo
+27. Get swap information	# cat /proc/swaps
+28. Get interface information	# cat /proc/net/dev
+29. Get mount information	# cat /proc/mounts
+30. Get arch info # arch # uname -m
+31. Display calendar via CLI.  # cal 2014
+32. The date command format.	# date 041217002007.00    #MonthDayHoursMinutesYear.Seconds
+33. The date command in future eg plus 10 days into the future.	# date -d "+10 days"
+34. The date command in future eg plus 10 days into the future.	# date -d "10 days ago"
+35. List USB devices.	# lsusb -tv
+35. List USB devices.	# lspci -tv
+36. find command	# find /etc -type f -exec fgrep de_DE.UTF-8 {} \; -ls
+37. What yum command command searches for which packages provide the requested dependency of file. This also takes wildcards for files?	# yum provides/whatprovides \*/setlocale
+38. How would you use yum whatprovides to install ifconfig?	# yum whatprovides ifconfig
+39. How do you append a new directory bin to a user's home directory $PATH? # PATH=$PATH:$HOME/bin
+40. List all env variables.	 env
+41. aliases; write the ll, rm, & cp alias.	# alias ll='ls -l --color=auto' alias rm='rm -i' alias cp='cp -i' 
+42. How do you over-ride the rm alias when you want to avoid interactiveness eg numerous y/n prompts?	# rm -f
+43. IP Forwarding: How do you setup via cli?	# echo "1" > /proc/sys/ipv4/ip_forward
+44. Does IP Forwarding allow VMs to communicate to outside networks?	# Yes
+45. What trusted interface must be setup on the firewall, so VMs can utilize IP Forwarding?	virtual network adapter
+46. Type "ls tmp tmp1" sans quotes and redirect stdout to a file named ls.txt and stderr to /dev/null;tmp1 is missing	$ ls tmp tmp1 > ls.txt 2> /dev/null
+47. This time type "ls tmp tmp1" sans quotes and redirect stdout and stderr to a file named ls.txt.	ls > ls.txt 2>&1
+48. Set enforcing mode within selinux.	 setenforce 1
+49. List and identify selinux file(s), process(es), user(s) and group IDs.	 # ls -Z # ps -Z # id -Z
+50. SELinux, restore default file contexts.	 semanage fcontext -a -t type file-name|¿dir_spec(/.*)?¿
+51. What app do you need for semanage?	policycoreutils-python
+52. SELinux, Restore default file contexts.  restorecon -R -F -v full_path_to_file_or_dir 
+53. What app do you need for restorecon?	policycoreutils
+54. SELinux, for services and their associated files, what do you run?	apropos _selinux | grep ftpd or grep ftpd /etc/selinux/targeted/context/files/file_contexts
+55. If apropros _selinux doesn't work, what must you install and what are the steps?	# yum -y install selinux-policy-devel, # sepolicy manpage -a -p /usr/share/man/man8, # mandb, # apropos _selinux
+56. How do you use boolean settings to modify system SELinux settings?	semanage boolean -l or getsebool -a : show list of all booleans
+57. How do you persistently set a selinux boolean value?	 setsebool -P boolean_name on|off, system-config-selinux
+58. If file context is correct but you still have SELinux access violations what do you check?	 /var/log/audit/audit.log or run sealert -b), check the booleans to see if the service is allowed /selinux/booleans/, service-name_selinux man page for booleans and explanations
+59. How do you diagnose and address routine SELinux policy violations?	 Check DAC permissions, ACL, and then SELinux errors use the restore default file context's ability to solve the problem, ausearch -m avc -c command_name, sealert -a /var/log/audit.log (needs auditd), audit2why < /var/log/audit/audit.log, system-config-selinux, seaudit, semanage user -l, semanage login -a -s staff_u user_name, semanage login -a -S targeted -s xguest_u -r s0 __default__
+60. CH. 3. Users and Groups: Add user John Doe with full name and specify home dir.	useradd -c "John Doe" -d /home/jdoe jdoe
+61. Delete user jdoe and home directory.	userdel -r jdoe
+62. Create primary group hades and add jdoe to it.	groupadd hades; usermod -g hades jdoe
+63. Create user John Doe jdoe and add him to the group hades and purgatory with /home/jdoe as home dir.	useradd -G hades,purgatory -c "John Doe" -d /home/jdoe
+64. Change jdoe's primary group to purgatory.	usermod -g purgatory jdoe
+65. What's the format for /etc/group?	groupName:password:groupID:user1,user2
+66. What's the format for /etc/passwd?	user:password:UID:GID:fullName:homeDir:shellLogin
+67. What's the format for /etc/shadow?	user:password
+68. What command do you use to verify user's information eg UID, GID, and groups?	id username
+69. The commands usermod and useradd have to switches/options "-g/-G" for primary (primary login group) and supplemental groups; which one is which?	-g primary group and -G supplemental groups
+70. Add jdoe to supplemental group olympus.	usermod -G olympus jdoe
+71. What is the GUI for managing users?	system-config-users
+72. What switch do you use for useradd when setting up an automatic home directory?	useradd -m
+73. What switch do you use for useradd when setting up the shell?	useradd -s
+74. What switch do you use for useradd when setting up the expiration?	useradd -e
+75. What switch do you use for useradd when setting up the number of days before expiration?	useradd -f
+76. What command do you use to change groups as a user?	newgrp/chgrp
+77. Create a directory and set the mode at the same time.  mkdir -m a=rwx
+78. Set sticky bit in symbolic notation on file sticky.txt	chmod +t sticky.txt
+79. Remove sticky bit in symbolic notation on file sticky.txt	chmod -t sticky.txt
+79. 
+61. Attaching a system to centralized LDAP and Kerberos servers  pg 67	/etc/ldap.conf /etc/krb5.conf /etc/sssd/sssd.conf /etc/nsswitch.conf /etc/pam.d/* /etc/openldap/cacerts authconfig authconfig-tui authconfig-gtk system-config-authentication
+61. What LDAP parameters would a client need?
+          DN Distinguished Name (dc=example, dc=com) (ou=People, o=People, o=PonyCorp
+      SSL/TLS CA cert ldap server
+      kerberos
+         kerberos realm
+         KDC
+         yum -y install authconfig-gtk sssd krb5-workstation
+
+Testing a configuration (sssd will not enumerate network users when no username is specified to the getent command.
+    getent passwd <USERNAME>  ........................  pg 70
+
+Attaching a System to an IPA Server  ........................  pg 70
+    ipa-client-install
+
+Joining a system to AD  .....................................  pg 71
+samba-windbind
+windbind
+authconfig
+sssd
+realm
+ipa-client-install --mkhomedir
+yum -y install realmd
+realm discover domain.example.com
+realm join domain.example.com
+realm permit --realm domain.example.com --all
+realm permit --realm domain.example.com DOMAIN\\Itchy DOMAIN\\Scratchy
+
+NOTE:
+ipauser@ipa.example.com
+DOMAIN\Picard
+
+/etc/sssd/sssd.conf
+--snip--
+    use_fully_qualified_names
+--snip--
+systemctl restart sssd
+
+REF:
+authconfig(8), authconfig-tui(8), authconfig-gtk(8), sssd(8), sssd-ipa(8), sssd.conf(5), sssd-ad, and realm(8)
+
+LDAP Server:            ldap://classroom.example.com
+LDAP base DN:           dc=example,dc=com
+Use TLS:                Yes
+Root CA:                http://classroom.examplle.com/pub/example-ca.crt
+Kerberos realm :        EXAMPLE.COM
+Kerberos KDC:           classroom.example.com
+Kerberos admin server:  classroom.example.com
+
+yum -y install sssd authconfig-gtk krb5-workstation
+                                
+          
+  Practice: Connecting to a Central LDAP and Kerberos Server   pg 73
+CH. 4. File Permissions
+  POSIX ACLs                                                   pg 95
+
+
